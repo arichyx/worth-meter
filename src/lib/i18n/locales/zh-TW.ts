@@ -1,0 +1,119 @@
+import type { TranslationKey } from './en';
+
+export const zhTW: Record<TranslationKey, string> = {
+  appName: 'WorthMeter',
+  appSubtitle: '回本儀表盤',
+  back: '返回',
+  loading: '載入中...',
+  confirm: '確認',
+  cancel: '返回',
+  change: '更改類型',
+  delete: '刪除',
+  creating: '建立中...',
+  notFound: '資產未找到',
+
+  totalInvested: '總投入',
+  assets: '資產數量',
+  breakEven: '已回本',
+  avgBreakEvenProgress: '平均回本進度',
+  noAssets: '還沒有任何資產',
+  createFirst: '建立第一個資產',
+  newAsset: '新建資產',
+
+  countBased: '次數型',
+  quotaBased: '配額型',
+  timeBased: '時間型',
+
+  costPerUse: '單次成本',
+  uses: '使用次數',
+  targetUses: '目標次數',
+  used: '已用',
+  times: '次',
+
+  usageRate: '使用率',
+  valueRecovered: '已回本金額',
+  expectedWeeks: '預期週數',
+  records: '記錄次數',
+
+  dailyCost: '每日成本',
+  daysUsed: '使用天數',
+  targetDays: '目標天數',
+
+  breakEvenProgress: '回本進度',
+  breakEvenReached: '已回本 ✓',
+
+  newAssetTitle: '新建資產',
+  newAssetDescription: '選擇資產類型並填寫資訊',
+  chooseType: '選擇資產類型',
+
+  name: '名稱',
+  namePlaceholder: '例如 游泳季卡',
+  totalCost: '總價格 (¥)',
+  totalCostPlaceholder: '1200',
+  purchaseDate: '購買日期',
+  expiryDate: '有效期至',
+  targetUnitCost: '目標單次價格 (¥)',
+  targetUnitCostPlaceholder: '60',
+  billingCycleStart: '帳單週期開始',
+  billingCycleEnd: '帳單週期結束',
+  targetDailyCost: '目標每日成本 (¥)',
+  targetDailyCostPlaceholder: '50',
+  resaleValue: '殘值 (¥)',
+  resaleValuePlaceholder: '5000',
+
+  countDescription: '游泳卡、健身課、按摩卡等',
+  quotaDescription: 'GPT Plus、API 配額等',
+  timeDescription: '電腦、手機、相機、耳機等',
+
+  countFields: '次數型專屬欄位',
+  quotaFields: '配額型專屬欄位',
+  timeFields: '時間型專屬欄位',
+
+  createAsset: '建立資產',
+
+  purchasedOn: '購買於',
+  logUse: '記錄使用',
+  logReset: '記錄 Reset',
+  logUseTitle: '記錄一次使用',
+  logResetTitle: '記錄 Reset 前剩餘',
+  logUseDescription: '將新增一次使用記錄。',
+  logResetDescription: '輸入 weekly quota 重設前的剩餘額度百分比。',
+  remainingQuota: '剩餘額度 %',
+  remainingPlaceholder: '例如 40 表示剩餘 40%',
+  recordOneUse: '將記錄 1 次使用，點擊確認。',
+  useDate: '使用日期',
+
+  costPerUseTrend: '單次成本趨勢',
+  costPerUseTrendDesc: '隨著使用次數增加，單次成本逐漸降低',
+  usageTrend: '使用率趨勢',
+  usageTrendDesc: '每週額度重設前的使用百分比',
+  dailyCostTrend: '每日成本趨勢',
+  dailyCostTrendDesc: '隨著使用天數增加，每日成本逐漸降低',
+
+  usageRecords: '使用記錄',
+  oneUse: '使用 1 次',
+  remaining: '剩餘',
+
+  pickDate: '選擇日期',
+
+  deleteConfirmTitle: '刪除資產',
+  deleteConfirmDescription: '此操作不可撤銷，所有使用記錄將被永久刪除。',
+  submitting: '提交中...',
+
+  edit: '編輯',
+  editAsset: '編輯資產',
+  editAssetDescription: '修改資產資訊。',
+  save: '儲存',
+  saving: '儲存中...',
+
+  // Archive
+  inUse: '使用中',
+  archived: '已廢棄',
+  archive: '廢棄',
+  unarchive: '恢復使用',
+  archivedOn: '廢棄於',
+  archiveConfirmTitle: '廢棄資產',
+  archiveConfirmDescription: '將標記為已廢棄，計算將以廢棄日期為準。',
+  unarchiveConfirmTitle: '恢復資產',
+  unarchiveConfirmDescription: '將恢復為使用中，計算將重新從今天開始。',
+};
