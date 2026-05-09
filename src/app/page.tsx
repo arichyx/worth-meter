@@ -74,7 +74,7 @@ function computeSummary(locale: Locale, asset: AssetWithRecords): Summary {
     case 'time': {
       const m: TimeBasedMetrics = calculateTimeBased(asset);
       return {
-        primary: `¥${m.dailyCost.toFixed(1)} / ${locale === 'zh' ? '天' : 'day'}`,
+        primary: `¥${m.dailyCost.toFixed(2)} / ${locale === 'zh' ? '天' : 'day'}`,
         secondary: `${tt('daysUsed')} ${m.daysSincePurchase} ${locale === 'zh' ? '天' : 'days'}`,
         progress: m.breakEvenProgress,
         label: m.isBreakEven ? tt('breakEvenReached') : undefined,
@@ -83,7 +83,7 @@ function computeSummary(locale: Locale, asset: AssetWithRecords): Summary {
     case 'count': {
       const m: CountBasedMetrics = calculateCountBased(asset, asset.usageRecords);
       return {
-        primary: `¥${m.costPerUse.toFixed(1)} / ${locale === 'zh' ? '次' : 'use'}`,
+        primary: `¥${m.costPerUse.toFixed(2)} / ${locale === 'zh' ? '次' : 'use'}`,
         secondary: `${tt('used')} ${m.usedCount} ${tt('times')}`,
         progress: m.breakEvenProgress,
         label: m.isBreakEven ? tt('breakEvenReached') : undefined,

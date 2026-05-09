@@ -40,8 +40,6 @@ export default async function AssetDetailPage({ params }: { params: Promise<{ id
   const locale: Locale = isValidLocale(raw) ? raw : 'zh';
   const tt = (key: Parameters<typeof t>[1]) => t(locale, key);
 
-  await new Promise((resolve) => setTimeout(resolve, 2000));
-
   const asset = getAssetWithRecords(id);
   if (!asset) notFound();
 
