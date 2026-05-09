@@ -15,7 +15,7 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { calculateTimeBased } from '@/lib/calculations';
 import type { Asset, UsageRecord } from '@/lib/db/schema';
-import { useI18n } from '@/lib/i18n';
+import { getCurrencySymbol, useI18n } from '@/lib/i18n';
 
 interface AssetWithRecords extends Asset {
   usageRecords: UsageRecord[];
@@ -57,7 +57,8 @@ function buildChartData(asset: AssetWithRecords) {
 }
 
 export function AssetChart({ asset }: { asset: AssetWithRecords }) {
-  const { t: tt } = useI18n();
+  const { t: tt, currency } = useI18n();
+  const sym = getCurrencySymbol(currency);
   const chartData = buildChartData(asset);
 
   return (
@@ -82,7 +83,7 @@ export function AssetChart({ asset }: { asset: AssetWithRecords }) {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="label" fontSize={12} />
                 <YAxis fontSize={12} />
-                <Tooltip formatter={(value) => [`¥${value}`, 'Daily Cost']} />
+                <Tooltip formatter={(value) => [`${sym}${value}`, 'Daily Cost']} />
                 <Line
                   type="monotone"
                   dataKey="dailyCost"
@@ -96,7 +97,7 @@ export function AssetChart({ asset }: { asset: AssetWithRecords }) {
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="label" fontSize={12} />
                 <YAxis fontSize={12} />
-                <Tooltip formatter={(value) => [`¥${value}`, 'Cost/Use']} />
+                <Tooltip formatter={(value) => [`${sym}${value}`, 'Cost/Use']} />
                 <Line
                   type="monotone"
                   dataKey="costPerUse"

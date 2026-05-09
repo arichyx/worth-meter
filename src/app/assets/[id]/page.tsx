@@ -18,6 +18,7 @@ import { getAssetWithRecords } from '@/lib/db/queries';
 import type { AssetType } from '@/lib/db/schema';
 import { COOKIE_NAME, isValidLocale, type Locale } from '@/lib/i18n/locale';
 import { t } from '@/lib/i18n/server';
+import { CURRENCY_COOKIE_NAME, isValidCurrency, type Currency, getCurrencySymbol } from '@/lib/currency';
 import { AssetChart } from './asset-chart';
 import { DetailHeader } from './detail-header';
 import { UsageDialog } from './usage-dialog';
@@ -38,6 +39,9 @@ export default async function AssetDetailPage({ params }: { params: Promise<{ id
   const cookieStore = await cookies();
   const raw = cookieStore.get(COOKIE_NAME)?.value;
   const locale: Locale = isValidLocale(raw) ? raw : 'zh';
+  const rawCurrency = cookieStore.get(CURRENCY_COOKIE_NAME)?.value;
+  const currency: Currency = isValidCurrency(rawCurrency) ? rawCurrency : 'cny';
+  const sym = getCurrencySymbol(currency);
   const tt = (key: Parameters<typeof t>[1]) => t(locale, key);
 
   const asset = getAssetWithRecords(id);
@@ -86,7 +90,7 @@ export default async function AssetDetailPage({ params }: { params: Promise<{ id
             </div>
             <h1 className="text-3xl font-bold">{asset.name}</h1>
             <p className="text-muted-foreground mt-1">
-              ¥{asset.totalCost.toLocaleString()} · {tt('purchasedOn')}{' '}
+              {sym}{asset.totalCost.toLocaleString()} · {tt('purchasedOn')}{' '}
               {format(new Date(asset.purchaseDate), 'yyyy-MM-dd')}
             </p>
           </div>
@@ -100,7 +104,7 @@ export default async function AssetDetailPage({ params }: { params: Promise<{ id
               const m = metrics as TimeBasedMetrics;
               return (
                 <>
-                  <MetricCard title={tt('dailyCost')} value={`¥${m.dailyCost.toFixed(1)}`} />
+                  <MetricCard title={tt('dailyCost')} value={`${sym}${m.dailyCost.toFixed(1)}`} />
                   <MetricCard title={tt('daysUsed')} value={`${m.daysSincePurchase}`} />
                   <MetricCard title={tt('targetDays')} value={m.targetDays?.toString() ?? 'N/A'} />
                   <MetricCard
@@ -120,7 +124,7 @@ export default async function AssetDetailPage({ params }: { params: Promise<{ id
               const m = metrics as CountBasedMetrics;
               return (
                 <>
-                  <MetricCard title={tt('costPerUse')} value={`¥${m.costPerUse.toFixed(1)}`} />
+                  <MetricCard title={tt('costPerUse')} value={`${sym}${m.costPerUse.toFixed(1)}`} />
                   <MetricCard title={tt('uses')} value={`${m.usedCount}`} />
                   <MetricCard
                     title={tt('targetUses')}
@@ -150,7 +154,7 @@ export default async function AssetDetailPage({ params }: { params: Promise<{ id
                   />
                   <MetricCard
                     title={tt('valueRecovered')}
-                    value={`¥${m.estimatedValue.toFixed(0)}`}
+                    value={`${sym}${m.estimatedValue.toFixed(0)}`}
                   />
                   <MetricCard
                     title={tt('expectedWeeks')}

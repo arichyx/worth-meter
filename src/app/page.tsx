@@ -19,6 +19,7 @@ import { getAllAssetsWithRecords } from '@/lib/db/queries';
 import type { Asset, AssetType, UsageRecord } from '@/lib/db/schema';
 import { COOKIE_NAME, isValidLocale, type Locale } from '@/lib/i18n/locale';
 import { t } from '@/lib/i18n/server';
+import { CURRENCY_COOKIE_NAME, isValidCurrency, type Currency, getCurrencySymbol } from '@/lib/currency';
 import { cn } from '@/lib/utils';
 
 interface AssetWithRecords extends Asset {
@@ -68,13 +69,13 @@ function getTypeIcon(type: AssetType) {
   }
 }
 
-function computeSummary(locale: Locale, asset: AssetWithRecords): Summary {
+function computeSummary(locale: Locale, asset: AssetWithRecords, sym: string): Summary {
   const tt = (key: Parameters<typeof t>[1]) => t(locale, key);
   switch (asset.type) {
     case 'time': {
       const m: TimeBasedMetrics = calculateTimeBased(asset);
       return {
-        primary: `¥${m.dailyCost.toFixed(2)} / ${locale === 'zh' ? '天' : 'day'}`,
+        primary: `${sym}${m.dailyCost.toFixed(2)} / ${locale === 'zh' ? '天' : 'day'}`,
         secondary: `${tt('daysUsed')} ${m.daysSincePurchase} ${locale === 'zh' ? '天' : 'days'}`,
         progress: m.breakEvenProgress,
         label: m.isBreakEven ? tt('breakEvenReached') : undefined,
@@ -83,7 +84,7 @@ function computeSummary(locale: Locale, asset: AssetWithRecords): Summary {
     case 'count': {
       const m: CountBasedMetrics = calculateCountBased(asset, asset.usageRecords);
       return {
-        primary: `¥${m.costPerUse.toFixed(2)} / ${locale === 'zh' ? '次' : 'use'}`,
+        primary: `${sym}${m.costPerUse.toFixed(2)} / ${locale === 'zh' ? '次' : 'use'}`,
         secondary: `${tt('used')} ${m.usedCount} ${tt('times')}`,
         progress: m.breakEvenProgress,
         label: m.isBreakEven ? tt('breakEvenReached') : undefined,
@@ -93,7 +94,7 @@ function computeSummary(locale: Locale, asset: AssetWithRecords): Summary {
       const m: QuotaBasedMetrics = calculateQuotaBased(asset, asset.usageRecords);
       return {
         primary: `${tt('usageRate')} ${(m.usageRatio * 100).toFixed(0)}%`,
-        secondary: `${tt('valueRecovered')} ¥${m.estimatedValue.toFixed(0)}`,
+        secondary: `${tt('valueRecovered')} ${sym}${m.estimatedValue.toFixed(0)}`,
         progress: m.usageRatio > 1 ? 1 : m.usageRatio,
         label: m.usageRatio >= 1 ? tt('breakEvenReached') : undefined,
       };
@@ -101,7 +102,7 @@ function computeSummary(locale: Locale, asset: AssetWithRecords): Summary {
   }
 }
 
-function AssetCard({ asset, summary, archived }: AssetWithSummary & { archived?: boolean }) {
+function AssetCard({ asset, summary, archived, sym }: AssetWithSummary & { archived?: boolean; sym: string }) {
   const styles = TYPE_STYLES[asset.type];
   const broken = summary.label !== undefined;
   return (
@@ -119,7 +120,7 @@ function AssetCard({ asset, summary, archived }: AssetWithSummary & { archived?:
           <div className="flex items-baseline justify-between gap-2">
             <CardTitle className="truncate">{asset.name}</CardTitle>
             <span className="text-xs text-muted-foreground tabular-nums shrink-0">
-              ¥{asset.totalCost.toLocaleString()}
+              {sym}{asset.totalCost.toLocaleString()}
             </span>
           </div>
         </CardHeader>
@@ -151,6 +152,9 @@ export default async function Dashboard() {
   const cookieStore = await cookies();
   const raw = cookieStore.get(COOKIE_NAME)?.value;
   const locale: Locale = isValidLocale(raw) ? raw : 'zh';
+  const rawCurrency = cookieStore.get(CURRENCY_COOKIE_NAME)?.value;
+  const currency: Currency = isValidCurrency(rawCurrency) ? rawCurrency : 'cny';
+  const sym = getCurrencySymbol(currency);
   const tt = (key: Parameters<typeof t>[1]) => t(locale, key);
 
   const assets = getAllAssetsWithRecords();
@@ -158,7 +162,7 @@ export default async function Dashboard() {
   // One pass: compute every summary once, then derive aggregates.
   const enriched: AssetWithSummary[] = assets.map((asset) => ({
     asset,
-    summary: computeSummary(locale, asset),
+    summary: computeSummary(locale, asset, sym),
   }));
 
   let totalInvestment = 0;
@@ -192,7 +196,7 @@ export default async function Dashboard() {
                 <div>
                   <p className="text-sm text-muted-foreground">{tt('totalInvested')}</p>
                   <p className="text-2xl font-bold tabular-nums tracking-tight">
-                    ¥{totalInvestment.toLocaleString()}
+                    {sym}{totalInvestment.toLocaleString()}
                   </p>
                 </div>
               </div>
@@ -283,7 +287,7 @@ export default async function Dashboard() {
                       <p className="text-sm text-muted-foreground py-4 text-center">—</p>
                     ) : (
                       active.map(({ asset, summary }) => (
-                        <AssetCard key={asset.id} asset={asset} summary={summary} />
+                        <AssetCard key={asset.id} asset={asset} summary={summary} sym={sym} />
                       ))
                     )}
                   </div>
@@ -298,7 +302,7 @@ export default async function Dashboard() {
                       </div>
                       <div className="space-y-3">
                         {archived.map(({ asset, summary }) => (
-                          <AssetCard key={asset.id} asset={asset} summary={summary} archived />
+                          <AssetCard key={asset.id} asset={asset} summary={summary} archived sym={sym} />
                         ))}
                       </div>
                     </>

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import { cookies } from 'next/headers';
 import './globals.css';
+import { CURRENCY_COOKIE_NAME, isValidCurrency, type Currency } from '@/lib/currency';
 import { COOKIE_NAME, isValidLocale, type Locale } from '@/lib/i18n/locale';
 import { Providers } from './providers';
 
@@ -28,6 +29,8 @@ export default async function RootLayout({
   const cookieStore = await cookies();
   const raw = cookieStore.get(COOKIE_NAME)?.value;
   const locale: Locale = isValidLocale(raw) ? raw : 'zh';
+  const rawCurrency = cookieStore.get(CURRENCY_COOKIE_NAME)?.value;
+  const currency: Currency = isValidCurrency(rawCurrency) ? rawCurrency : 'cny';
 
   return (
     <html
@@ -35,7 +38,7 @@ export default async function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background">
-        <Providers locale={locale}>{children}</Providers>
+        <Providers locale={locale} currency={currency}>{children}</Providers>
       </body>
     </html>
   );
