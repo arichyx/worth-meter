@@ -56,7 +56,9 @@ export const zh: Record<TranslationKey, string> = {
 
   // Form fields
   name: '名称',
-  namePlaceholder: '例如 游泳季卡',
+  timeNamePlaceholder: '例如 MacBook Pro',
+  countNamePlaceholder: '例如 游泳季卡',
+  quotaNamePlaceholder: '例如 GPT Plus',
   totalCost: '总价格 (¥)',
   totalCostPlaceholder: '1200',
   purchaseDate: '购买日期',

@@ -47,7 +47,9 @@ export const zhTW: Record<TranslationKey, string> = {
   chooseType: '選擇資產類型',
 
   name: '名稱',
-  namePlaceholder: '例如 游泳季卡',
+  timeNamePlaceholder: '例如 MacBook Pro',
+  countNamePlaceholder: '例如 游泳季卡',
+  quotaNamePlaceholder: '例如 GPT Plus',
   totalCost: '總價格 (¥)',
   totalCostPlaceholder: '1200',
   purchaseDate: '購買日期',

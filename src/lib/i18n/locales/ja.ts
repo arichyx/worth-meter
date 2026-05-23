@@ -47,7 +47,9 @@ export const ja: Record<TranslationKey, string> = {
   chooseType: '資産タイプを選択',
 
   name: '名前',
-  namePlaceholder: '例：スイミングパス',
+  timeNamePlaceholder: '例：MacBook Pro',
+  countNamePlaceholder: '例：スイミングパス',
+  quotaNamePlaceholder: '例：GPT Plus',
   totalCost: '総額 (¥)',
   totalCostPlaceholder: '1200',
   purchaseDate: '購入日',

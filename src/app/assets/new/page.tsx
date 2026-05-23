@@ -39,6 +39,13 @@ export default function NewAssetPage() {
     { value: 'count' as AssetType, icon: <Hash className="h-5 w-5" /> },
     { value: 'quota' as AssetType, icon: <Layers className="h-5 w-5" /> },
   ];
+  const namePlaceholder = t(
+    selectedType === 'time'
+      ? 'timeNamePlaceholder'
+      : selectedType === 'count'
+        ? 'countNamePlaceholder'
+        : 'quotaNamePlaceholder',
+  );
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -161,7 +168,7 @@ export default function NewAssetPage() {
                         id="name"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
-                        placeholder={t('namePlaceholder')}
+                        placeholder={namePlaceholder}
                         required
                       />
                     </div>

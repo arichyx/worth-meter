@@ -54,7 +54,9 @@ export const en = {
 
   // Form fields
   name: 'Name',
-  namePlaceholder: 'e.g. Swimming Pass',
+  timeNamePlaceholder: 'e.g. MacBook Pro',
+  countNamePlaceholder: 'e.g. Swimming Pass',
+  quotaNamePlaceholder: 'e.g. GPT Plus',
   totalCost: 'Total Cost (¥)',
   totalCostPlaceholder: '1200',
   purchaseDate: 'Purchase Date',
