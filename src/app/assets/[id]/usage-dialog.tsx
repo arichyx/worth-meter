@@ -28,6 +28,14 @@ export function UsageDialog({ assetId, assetType }: { assetId: string; assetType
   const [useDate, setUseDate] = useState<Date | undefined>(new Date());
   const [pending, startTransition] = useTransition();
 
+  function handleOpenChange(nextOpen: boolean) {
+    if (nextOpen && assetType === 'count') {
+      setUseDate(new Date());
+    }
+
+    setOpen(nextOpen);
+  }
+
   function handleSubmit() {
     const value = assetType === 'count' ? 1 : parseFloat(usageValue);
     if (assetType === 'quota' && Number.isNaN(value)) return;
@@ -44,7 +52,7 @@ export function UsageDialog({ assetId, assetType }: { assetId: string; assetType
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger
         render={
           <Button>
