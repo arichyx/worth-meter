@@ -1,4 +1,4 @@
-import { Activity, Archive, Clock, Hash, Layers, Plus, TrendingUp, Wallet } from 'lucide-react';
+import { Archive, Clock, Hash, Layers, Plus } from 'lucide-react';
 import { cookies } from 'next/headers';
 import Link from 'next/link';
 import { DashboardHeader } from '@/components/dashboard-header';
@@ -38,23 +38,22 @@ interface AssetWithSummary {
   summary: Summary;
 }
 
-// Per-type visual identity. Keep these Tailwind-arbitrary so the palette is
-// explicit and independent of theme CSS vars.
-const TYPE_STYLES: Record<AssetType, { accent: string; iconChip: string; cardBorder: string }> = {
+// Per-type visual identity, driven by the cross-mode type tokens.
+const TYPE_STYLES: Record<AssetType, { accent: string; iconShell: string; tint: string }> = {
   time: {
-    accent: 'text-amber-600',
-    iconChip: 'bg-gradient-to-br from-amber-100 to-amber-200 text-amber-700',
-    cardBorder: 'border-l-2 border-l-amber-400/70',
+    accent: 'text-type-time',
+    iconShell: 'border border-type-time/20 bg-type-time/10 text-type-time',
+    tint: 'bg-type-time/5',
   },
   count: {
-    accent: 'text-sky-600',
-    iconChip: 'bg-gradient-to-br from-sky-100 to-sky-200 text-sky-700',
-    cardBorder: 'border-l-2 border-l-sky-400/70',
+    accent: 'text-type-count',
+    iconShell: 'border border-type-count/20 bg-type-count/10 text-type-count',
+    tint: 'bg-type-count/5',
   },
   quota: {
-    accent: 'text-violet-600',
-    iconChip: 'bg-gradient-to-br from-violet-100 to-violet-200 text-violet-700',
-    cardBorder: 'border-l-2 border-l-violet-400/70',
+    accent: 'text-type-quota',
+    iconShell: 'border border-type-quota/20 bg-type-quota/10 text-type-quota',
+    tint: 'bg-type-quota/5',
   },
 };
 
@@ -104,15 +103,12 @@ function computeSummary(locale: Locale, asset: AssetWithRecords, sym: string): S
 
 function AssetCard({ asset, summary, archived, sym }: AssetWithSummary & { archived?: boolean; sym: string }) {
   const styles = TYPE_STYLES[asset.type];
-  const broken = summary.label !== undefined;
   return (
     <Link href={`/assets/${asset.id}`} className="block">
       <Card
         size="sm"
         className={cn(
-          'gap-2 py-3 transition-all cursor-pointer',
-          'hover:shadow-md hover:-translate-y-0.5 hover:ring-foreground/20',
-          styles.cardBorder,
+          'gap-2 py-3 transition-all cursor-pointer hover:shadow-md hover:-translate-y-0.5',
           archived && 'opacity-60',
         )}
       >
@@ -126,21 +122,18 @@ function AssetCard({ asset, summary, archived, sym }: AssetWithSummary & { archi
         </CardHeader>
         <CardContent className="space-y-1.5">
           <div className="flex items-baseline justify-between gap-2">
-            <span className={cn('text-xl font-bold tabular-nums', styles.accent)}>
+            <span className={cn('text-xl font-semibold tabular-nums', styles.accent)}>
               {summary.primary}
             </span>
             {summary.label && (
-              <Badge className="bg-emerald-100 text-emerald-800 hover:bg-emerald-100 shrink-0">
+              <Badge variant="success" className="shrink-0">
                 {summary.label}
               </Badge>
             )}
           </div>
           <p className="text-xs text-muted-foreground">{summary.secondary}</p>
           {summary.progress !== null && (
-            <Progress
-              value={Math.min(summary.progress * 100, 100)}
-              className={cn('h-1 mt-1', broken && '[&>div]:bg-emerald-500')}
-            />
+            <Progress value={Math.min(summary.progress * 100, 100)} className="h-1 mt-1" />
           )}
         </CardContent>
       </Card>
@@ -159,7 +152,6 @@ export default async function Dashboard() {
 
   const assets = getAllAssetsWithRecords();
 
-  // One pass: compute every summary once, then derive aggregates.
   const enriched: AssetWithSummary[] = assets.map((asset) => ({
     asset,
     summary: computeSummary(locale, asset, sym),
@@ -176,81 +168,49 @@ export default async function Dashboard() {
   const avgProgress = enriched.length > 0 ? progressSum / enriched.length : 0;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">
       <DashboardHeader />
 
-      <main className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Soft ambient gradient behind the top of the page */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-0 h-80 -z-10 bg-[radial-gradient(ellipse_at_top,theme(colors.sky.100),transparent_60%)]"
-        />
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-          <Card>
-            <CardContent>
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-gradient-to-br from-blue-100 to-blue-200 text-blue-700 ring-1 ring-blue-300/50">
-                  <Wallet className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">{tt('totalInvested')}</p>
-                  <p className="text-2xl font-bold tabular-nums tracking-tight">
-                    {sym}{totalInvestment.toLocaleString()}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent>
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-gradient-to-br from-green-100 to-green-200 text-green-700 ring-1 ring-green-300/50">
-                  <TrendingUp className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">{tt('assets')}</p>
-                  <p className="text-2xl font-bold tabular-nums tracking-tight">{assets.length}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent>
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-gradient-to-br from-emerald-100 to-emerald-200 text-emerald-700 ring-1 ring-emerald-300/50">
-                  <Activity className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">{tt('breakEven')}</p>
-                  <p className="text-2xl font-bold tabular-nums tracking-tight">
-                    {breakEvenCount}{' '}
-                    <span className="text-sm font-normal text-muted-foreground">
-                      / {assets.length}
-                    </span>
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        <Card className="mb-8">
-          <CardContent>
-            <div className="flex items-center justify-between mb-3">
-              <p className="text-sm font-medium">{tt('avgBreakEvenProgress')}</p>
-              <p className="text-sm text-muted-foreground tabular-nums">
-                {(avgProgress * 100).toFixed(0)}%
+      <main className="bg-spotlight max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        {/* Overview — each figure shown once (no duplication).
+            Total invested (hero) + average break-even progress (right),
+            with asset / break-even counts as a quiet line. */}
+        <section className="mb-10">
+          <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+            <div className="relative isolate">
+              <div
+                aria-hidden
+                className="pointer-events-none absolute -inset-x-16 -inset-y-10 -z-10 rounded-full bg-primary/40 blur-3xl dark:bg-primary/20"
+              />
+              <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                {tt('totalInvested')}
+              </p>
+              <p className="mt-2 text-5xl font-semibold tracking-tight tabular-nums">
+                {sym}
+                {totalInvestment.toLocaleString()}
               </p>
             </div>
-            <Progress value={avgProgress * 100} className="h-3" />
-          </CardContent>
-        </Card>
+            <div className="sm:w-80">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  {tt('avgBreakEvenProgress')}
+                </span>
+                <span className="text-xs tabular-nums text-muted-foreground">
+                  {(avgProgress * 100).toFixed(0)}%
+                </span>
+              </div>
+              <Progress value={avgProgress * 100} className="h-1.5 mt-2.5" />
+            </div>
+          </div>
+          <p className="mt-5 text-sm text-muted-foreground tabular-nums">
+            {assets.length} {tt('assets')} · {breakEvenCount} {tt('breakEven')}
+          </p>
+        </section>
 
         <Separator className="mb-8" />
 
         {assets.length === 0 ? (
-          <div className="text-center py-20">
+          <div className="text-center py-24">
             <p className="text-lg text-muted-foreground mb-4">{tt('noAssets')}</p>
             <Link href="/assets/new">
               <Button>
@@ -270,44 +230,63 @@ export default async function Dashboard() {
               );
               const typeStyles = TYPE_STYLES[type];
               return (
-                <div key={type}>
-                  <div className="flex items-center gap-2 mb-4">
-                    <div className={cn('p-1.5 rounded-md', typeStyles.iconChip)}>
-                      {getTypeIcon(type)}
-                    </div>
-                    <h2 className={cn('text-lg font-semibold', typeStyles.accent)}>{typeLabel}</h2>
-                    <Badge variant="secondary">{group.length}</Badge>
-                  </div>
-
-                  <p className="mb-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                    {tt('inUse')}
-                  </p>
-                  <div className="space-y-3 mb-6">
-                    {active.length === 0 ? (
-                      <p className="text-sm text-muted-foreground py-4 text-center">—</p>
-                    ) : (
-                      active.map(({ asset, summary }) => (
-                        <AssetCard key={asset.id} asset={asset} summary={summary} sym={sym} />
-                      ))
+                <Card key={type} className="gap-0 overflow-hidden p-0">
+                  <CardHeader
+                    className={cn(
+                      'flex flex-row items-center justify-between gap-3 rounded-none border-b border-border/40 px-4 py-3.5',
+                      typeStyles.tint,
                     )}
-                  </div>
-
-                  {archived.length > 0 && (
-                    <>
-                      <div className="flex items-center gap-1.5 mb-2">
-                        <Archive className="h-3.5 w-3.5 text-muted-foreground" />
-                        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                          {tt('archived')}
-                        </p>
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <div
+                        className={cn(
+                          'flex size-8 items-center justify-center rounded-lg',
+                          typeStyles.iconShell,
+                        )}
+                      >
+                        {getTypeIcon(type)}
                       </div>
-                      <div className="space-y-3">
+                      <CardTitle className={cn('text-sm font-semibold', typeStyles.accent)}>
+                        {typeLabel}
+                      </CardTitle>
+                    </div>
+                    <Badge variant="secondary">{group.length}</Badge>
+                  </CardHeader>
+                  <CardContent className="flex flex-col gap-4 px-4 py-5">
+                    <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                      {tt('inUse')}
+                    </p>
+                    <div className="flex flex-col gap-3">
+                      {active.length === 0 ? (
+                        <p className="text-sm text-muted-foreground py-4 text-center">—</p>
+                      ) : (
+                        active.map(({ asset, summary }) => (
+                          <AssetCard key={asset.id} asset={asset} summary={summary} sym={sym} />
+                        ))
+                      )}
+                    </div>
+
+                    {archived.length > 0 && (
+                      <div className="flex flex-col gap-3">
+                        <div className="flex items-center gap-1.5">
+                          <Archive className="h-3.5 w-3.5 text-muted-foreground" />
+                          <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                            {tt('archived')}
+                          </p>
+                        </div>
                         {archived.map(({ asset, summary }) => (
-                          <AssetCard key={asset.id} asset={asset} summary={summary} archived sym={sym} />
+                          <AssetCard
+                            key={asset.id}
+                            asset={asset}
+                            summary={summary}
+                            archived
+                            sym={sym}
+                          />
                         ))}
                       </div>
-                    </>
-                  )}
-                </div>
+                    )}
+                  </CardContent>
+                </Card>
               );
             })}
           </div>

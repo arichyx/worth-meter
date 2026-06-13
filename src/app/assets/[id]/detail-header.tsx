@@ -3,6 +3,7 @@
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { LanguageToggle } from '@/components/language-toggle';
+import { ThemeToggle } from '@/components/theme-toggle';
 import type { Asset } from '@/lib/db/schema';
 import { useI18n } from '@/lib/i18n';
 import { ArchiveDialog } from './archive-dialog';
@@ -13,7 +14,7 @@ export function DetailHeader({ asset }: { asset: Asset }) {
   const { t } = useI18n();
 
   return (
-    <header className="border-b bg-card/50 backdrop-blur-sm">
+    <header className="glass-header">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link
@@ -25,6 +26,7 @@ export function DetailHeader({ asset }: { asset: Asset }) {
           </Link>
           <div className="flex items-center gap-2">
             <LanguageToggle />
+            <ThemeToggle />
             <EditDialog asset={asset} />
             <ArchiveDialog assetId={asset.id} archived={!!asset.archivedAt} />
             <DeleteDialog assetId={asset.id} />

@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useState, useTransition } from 'react';
 import { DatePicker } from '@/components/date-picker';
 import { LanguageToggle } from '@/components/language-toggle';
+import { ThemeToggle } from '@/components/theme-toggle';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -76,7 +77,7 @@ export default function NewAssetPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b bg-card/50 backdrop-blur-sm">
+      <header className="glass-header">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <Link
@@ -87,11 +88,12 @@ export default function NewAssetPage() {
               <span className="text-sm">{t('back')}</span>
             </Link>
             <LanguageToggle />
+            <ThemeToggle />
           </div>
         </div>
       </header>
 
-      <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="bg-spotlight max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <h2 className="text-2xl font-bold mb-2">{t('newAssetTitle')}</h2>
         <p className="text-muted-foreground mb-8">{t('newAssetDescription')}</p>
 

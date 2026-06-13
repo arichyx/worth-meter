@@ -4,6 +4,14 @@ import { cookies } from 'next/headers';
 import './globals.css';
 import { CURRENCY_COOKIE_NAME, isValidCurrency, type Currency } from '@/lib/currency';
 import { COOKIE_NAME, isValidLocale, type Locale } from '@/lib/i18n/locale';
+import {
+  DEFAULT_THEME,
+  THEME_COOKIE_NAME,
+  THEME_INIT_SCRIPT,
+  htmlThemeClass,
+  isValidTheme,
+  type Theme,
+} from '@/lib/theme';
 import { Providers } from './providers';
 
 const geistSans = Geist({
@@ -32,13 +40,24 @@ export default async function RootLayout({
   const rawCurrency = cookieStore.get(CURRENCY_COOKIE_NAME)?.value;
   const currency: Currency = isValidCurrency(rawCurrency) ? rawCurrency : 'cny';
 
+  const rawTheme = cookieStore.get(THEME_COOKIE_NAME)?.value;
+  const theme: Theme = isValidTheme(rawTheme) ? rawTheme : DEFAULT_THEME;
+  // SSR class for <html>. suppressHydrationWarning: the inline pre-paint script
+  // may correct 'system'/unknown to prefers-color-scheme before hydration.
+  const themeClass = htmlThemeClass(isValidTheme(rawTheme) ? rawTheme : null);
+
   return (
     <html
       lang={locale}
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased ${themeClass}`.trim()}
+      suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col bg-background">
-        <Providers locale={locale} currency={currency}>{children}</Providers>
+        {/* Pre-paint theme resolver — no flash of wrong theme. Runs synchronously. */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+        <Providers locale={locale} currency={currency} initialTheme={theme}>
+          {children}
+        </Providers>
       </body>
     </html>
   );

@@ -2,17 +2,17 @@
 
 import { format } from 'date-fns';
 import {
+  Area,
+  AreaChart,
   Bar,
   BarChart,
-  CartesianGrid,
-  Line,
-  LineChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from 'recharts';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { ChartTooltip, useChartTheme } from '@/components/charts/chart-theme';
 import { calculateTimeBased } from '@/lib/calculations';
 import type { Asset, UsageRecord } from '@/lib/db/schema';
 import { getCurrencySymbol, useI18n } from '@/lib/i18n';
@@ -59,7 +59,31 @@ function buildChartData(asset: AssetWithRecords) {
 export function AssetChart({ asset }: { asset: AssetWithRecords }) {
   const { t: tt, currency } = useI18n();
   const sym = getCurrencySymbol(currency);
+  const theme = useChartTheme();
   const chartData = buildChartData(asset);
+
+  const color =
+    asset.type === 'time'
+      ? (theme?.colors.time ?? '')
+      : asset.type === 'count'
+        ? (theme?.colors.count ?? '')
+        : (theme?.colors.quota ?? '');
+  const seriesName =
+    asset.type === 'time'
+      ? tt('dailyCost')
+      : asset.type === 'count'
+        ? tt('costPerUse')
+        : tt('usageRate');
+  const formatValue =
+    asset.type === 'quota'
+      ? (v: number) => `${v}%`
+      : (v: number) => `${sym}${v.toFixed(2)}`;
+
+  const axisProps = {
+    tick: { fontSize: 12, fill: theme?.colors.axis ?? 'currentColor' },
+    tickLine: false,
+    axisLine: false,
+  } as const;
 
   return (
     <Card className="mb-8">
@@ -77,47 +101,81 @@ export function AssetChart({ asset }: { asset: AssetWithRecords }) {
       </CardHeader>
       <CardContent>
         <div className="h-72">
-          <ResponsiveContainer width="100%" height="100%">
-            {asset.type === 'time' ? (
-              <LineChart data={chartData as { label: string; dailyCost: number; days: number }[]}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="label" fontSize={12} />
-                <YAxis fontSize={12} />
-                <Tooltip formatter={(value) => [`${sym}${value}`, 'Daily Cost']} />
-                <Line
-                  type="monotone"
-                  dataKey="dailyCost"
-                  stroke="hsl(221, 83%, 53%)"
-                  strokeWidth={2}
-                  dot={false}
-                />
-              </LineChart>
-            ) : asset.type === 'count' ? (
-              <LineChart data={chartData as { label: string; costPerUse: number; uses: number }[]}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="label" fontSize={12} />
-                <YAxis fontSize={12} />
-                <Tooltip formatter={(value) => [`${sym}${value}`, 'Cost/Use']} />
-                <Line
-                  type="monotone"
-                  dataKey="costPerUse"
-                  stroke="hsl(221, 83%, 53%)"
-                  strokeWidth={2}
-                  dot={{ r: 3 }}
-                />
-              </LineChart>
-            ) : (
-              <BarChart
-                data={chartData as { label: string; usedPercent: number; remaining: number }[]}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="label" fontSize={12} />
-                <YAxis fontSize={12} />
-                <Tooltip formatter={(value) => [`${value}%`, 'Used %']} />
-                <Bar dataKey="usedPercent" fill="hsl(221, 83%, 53%)" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            )}
-          </ResponsiveContainer>
+          {theme && (
+            <ResponsiveContainer width="100%" height="100%">
+              {asset.type === 'time' ? (
+                <AreaChart data={chartData as { label: string; dailyCost: number; days: number }[]}>
+                  <defs>
+                    <linearGradient id="grad-area" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor={color} stopOpacity={0.28} />
+                      <stop offset="100%" stopColor={color} stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <Tooltip
+                    content={<ChartTooltip formatValue={formatValue} />}
+                    cursor={{ stroke: theme.colors.grid, strokeOpacity: 0.4, strokeWidth: 1 }}
+                  />
+                  <XAxis dataKey="label" {...axisProps} />
+                  <YAxis width={44} {...axisProps} />
+                  <Area
+                    type="monotone"
+                    dataKey="dailyCost"
+                    name={seriesName}
+                    stroke={color}
+                    strokeWidth={2}
+                    fill="url(#grad-area)"
+                    dot={false}
+                    activeDot={{ r: 4, strokeWidth: 0 }}
+                  />
+                </AreaChart>
+              ) : asset.type === 'count' ? (
+                <AreaChart
+                  data={chartData as { label: string; costPerUse: number; uses: number }[]}
+                >
+                  <defs>
+                    <linearGradient id="grad-area" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor={color} stopOpacity={0.28} />
+                      <stop offset="100%" stopColor={color} stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <Tooltip
+                    content={<ChartTooltip formatValue={formatValue} />}
+                    cursor={{ stroke: theme.colors.grid, strokeOpacity: 0.4, strokeWidth: 1 }}
+                  />
+                  <XAxis dataKey="label" {...axisProps} />
+                  <YAxis width={44} {...axisProps} />
+                  <Area
+                    type="monotone"
+                    dataKey="costPerUse"
+                    name={seriesName}
+                    stroke={color}
+                    strokeWidth={2}
+                    fill="url(#grad-area)"
+                    dot={{ r: 3, strokeWidth: 0, fill: color }}
+                    activeDot={{ r: 4, strokeWidth: 0 }}
+                  />
+                </AreaChart>
+              ) : (
+                <BarChart
+                  data={chartData as { label: string; usedPercent: number; remaining: number }[]}
+                >
+                  <defs>
+                    <linearGradient id="grad-bar" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor={color} stopOpacity={0.95} />
+                      <stop offset="100%" stopColor={color} stopOpacity={0.55} />
+                    </linearGradient>
+                  </defs>
+                  <Tooltip
+                    content={<ChartTooltip formatValue={formatValue} />}
+                    cursor={{ fill: theme.colors.grid, fillOpacity: 0.1 }}
+                  />
+                  <XAxis dataKey="label" {...axisProps} />
+                  <YAxis width={44} {...axisProps} />
+                  <Bar dataKey="usedPercent" name={seriesName} fill="url(#grad-bar)" radius={[6, 6, 0, 0]} />
+                </BarChart>
+              )}
+            </ResponsiveContainer>
+          )}
         </div>
       </CardContent>
     </Card>

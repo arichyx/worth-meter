@@ -64,7 +64,7 @@ export default async function AssetDetailPage({ params }: { params: Promise<{ id
     <div className="min-h-screen bg-background">
       <DetailHeader asset={asset} />
 
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="bg-spotlight max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="flex items-start justify-between mb-8">
           <div>
             <div className="flex items-center gap-3 mb-2">
