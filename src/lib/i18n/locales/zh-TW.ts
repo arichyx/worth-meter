@@ -95,6 +95,9 @@ export const zhTW: Record<TranslationKey, string> = {
   usageRecords: '使用記錄',
   oneUse: '使用 1 次',
   remaining: '剩餘',
+  prevPage: '上一頁',
+  nextPage: '下一頁',
+  pageIndicator: '第 {page} / {totalPages} 頁',
 
   pickDate: '選擇日期',
 

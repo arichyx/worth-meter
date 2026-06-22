@@ -95,6 +95,9 @@ export const ja: Record<TranslationKey, string> = {
   usageRecords: '使用記録',
   oneUse: '1回使用',
   remaining: '残り',
+  prevPage: '前へ',
+  nextPage: '次へ',
+  pageIndicator: '{totalPages} ページ中 {page} ページ目',
 
   pickDate: '日付を選択',
 

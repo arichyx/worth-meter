@@ -112,6 +112,9 @@ export const en = {
   usageRecords: 'Usage Records',
   oneUse: '1 use',
   remaining: 'remaining',
+  prevPage: 'Previous',
+  nextPage: 'Next',
+  pageIndicator: 'Page {page} of {totalPages}',
 
   // DatePicker
   pickDate: 'Pick a date',

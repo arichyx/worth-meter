@@ -113,6 +113,9 @@ export const zh: Record<TranslationKey, string> = {
   usageRecords: '使用记录',
   oneUse: '使用 1 次',
   remaining: '剩余',
+  prevPage: '上一页',
+  nextPage: '下一页',
+  pageIndicator: '第 {page} / {totalPages} 页',
 
   // DatePicker
   pickDate: '选择日期',

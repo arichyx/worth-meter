@@ -24,10 +24,12 @@ import { getAssetWithRecords } from '@/lib/db/queries';
 import type { AssetType } from '@/lib/db/schema';
 import { COOKIE_NAME, isValidLocale, type Locale } from '@/lib/i18n/locale';
 import { t } from '@/lib/i18n/server';
+import { paginateRecords, parsePageParam, USAGE_RECORDS_PAGE_SIZE } from '@/lib/pagination';
 import { cn } from '@/lib/utils';
 import { AssetChart } from './asset-chart';
 import { DetailHeader } from './detail-header';
 import { UsageDialog } from './usage-dialog';
+import { UsageRecordsList } from './usage-records-list';
 
 const TYPE_STYLES: Record<
   AssetType,
@@ -69,8 +71,15 @@ function getTypeIcon(type: AssetType) {
   }
 }
 
-export default async function AssetDetailPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function AssetDetailPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
   const { id } = await params;
+  const page = parsePageParam((await searchParams).page);
   const cookieStore = await cookies();
   const raw = cookieStore.get(COOKIE_NAME)?.value;
   const locale: Locale = isValidLocale(raw) ? raw : 'zh';
@@ -94,6 +103,8 @@ export default async function AssetDetailPage({ params }: { params: Promise<{ id
       metrics = calculateQuotaBased(asset, asset.usageRecords);
       break;
   }
+
+  const paged = asset.type === 'count' ? paginateRecords(asset.usageRecords, page) : null;
 
   const typeStyles = TYPE_STYLES[asset.type];
   const typeLabel = tt(
@@ -304,14 +315,23 @@ export default async function AssetDetailPage({ params }: { params: Promise<{ id
 
         {asset.usageRecords.length > 0 && <AssetChart asset={asset} />}
 
-        {asset.type !== 'time' && asset.usageRecords.length > 0 && (
+        {asset.type === 'count' && asset.usageRecords.length > 0 && paged && (
+          <UsageRecordsList
+            assetId={id}
+            assetType={asset.type}
+            locale={locale}
+            rows={paged.rows}
+            total={paged.total}
+            page={paged.page}
+            totalPages={paged.totalPages}
+            pageSize={USAGE_RECORDS_PAGE_SIZE}
+          />
+        )}
+
+        {asset.type === 'quota' && asset.usageRecords.length > 0 && (
           <Card className="overflow-hidden pt-0 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.08)]">
             <CardHeader
-              className={cn(
-                'rounded-none border-b border-border/30 pt-4',
-                asset.type === 'count' && 'bg-type-count/5',
-                asset.type === 'quota' && 'bg-type-quota/5',
-              )}
+              className={cn('rounded-none border-b border-border/30 pt-4', 'bg-type-quota/5')}
             >
               <CardTitle className="text-lg">{tt('usageRecords')}</CardTitle>
             </CardHeader>
@@ -327,11 +347,7 @@ export default async function AssetDetailPage({ params }: { params: Promise<{ id
                       <Badge variant={typeStyles.badgeVariant} className="shrink-0">
                         #{asset.usageRecords.length - i}
                       </Badge>
-                      <span className="text-sm">
-                        {asset.type === 'count'
-                          ? tt('oneUse')
-                          : `${tt('remaining')} ${record.value}%`}
-                      </span>
+                      <span className="text-sm">{`${tt('remaining')} ${record.value}%`}</span>
                     </div>
                     <span className="shrink-0 text-sm text-muted-foreground">
                       {format(new Date(record.recordedAt), 'yyyy-MM-dd')}
