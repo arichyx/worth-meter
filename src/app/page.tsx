@@ -171,7 +171,7 @@ export default async function Dashboard() {
     <div className="min-h-screen">
       <DashboardHeader />
 
-      <main className="bg-spotlight max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         {/* Overview — each figure shown once (no duplication).
             Total invested (hero) + average break-even progress (right),
             with asset / break-even counts as a quiet line. */}

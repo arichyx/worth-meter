@@ -14,13 +14,13 @@ export function DashboardHeader() {
   return (
     <header className="glass-header">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between gap-3">
+        <div className="flex min-h-18 items-center justify-between gap-3 py-3">
           <div className="flex items-center gap-3">
-            <div className="flex size-9 items-center justify-center rounded-lg border border-border/50 bg-card text-foreground shadow-sm">
+            <div className="flex size-10 items-center justify-center rounded-lg border border-border/40 bg-card text-foreground shadow-sm">
               <Landmark className="size-5" />
             </div>
             <div>
-              <h1 className="text-base font-semibold tracking-tight">{t('appName')}</h1>
+              <h1 className="text-xl font-semibold tracking-tight">{t('appName')}</h1>
               <p className="text-xs text-muted-foreground">{t('appSubtitle')}</p>
             </div>
           </div>
@@ -30,7 +30,7 @@ export function DashboardHeader() {
             <LanguageToggle />
             <Link href="/assets/new">
               <Button>
-                <Plus className="h-4 w-4 mr-2" />
+                <Plus data-icon="inline-start" />
                 {t('newAsset')}
               </Button>
             </Link>

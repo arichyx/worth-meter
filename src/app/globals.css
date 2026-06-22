@@ -4,15 +4,14 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Tailwind theme mapping: namespace utilities → runtime CSS variables. */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-    'Segoe UI', sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, 'SFMono-Regular', Menlo, Monaco, Consolas,
-    monospace;
-  --font-heading: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono:
+    ui-monospace, "SFMono-Regular", "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  --font-heading:
+    ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --color-surface: var(--surface);
   --color-surface-foreground: var(--surface-foreground);
   --color-success: var(--success);
@@ -53,14 +52,6 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-
-  /* Layered elevation, mode-tuned via the --elevation-* runtime vars. */
-  --shadow-sm: var(--elevation-sm);
-  --shadow-md: var(--elevation-md);
-  --shadow-lg: var(--elevation-lg);
-  --shadow-card: var(--elevation-card);
-  --shadow-glow: var(--elevation-glow);
-
   --radius-sm: calc(var(--radius) * 0.5);
   --radius-md: calc(var(--radius) * 0.75);
   --radius-lg: var(--radius);
@@ -70,7 +61,6 @@
   --radius-4xl: calc(var(--radius) * 2.5);
 }
 
-/* ── LIGHT: cool light-gray canvas, solid white surfaces, violet primary ── */
 :root {
   --background: oklch(0.97 0.003 270);
   --foreground: oklch(0.18 0.01 270);
@@ -107,7 +97,7 @@
   --sidebar-ring: oklch(0.55 0.12 270 / 35%);
   --surface: oklch(0.96 0.006 270);
   --surface-foreground: oklch(0.3 0.015 270);
-  --success: oklch(0.55 0.1 150);
+  --success: oklch(0.55 0.10 150);
   --success-foreground: oklch(0.98 0.005 80);
   --type-time: oklch(0.55 0.14 250);
   --type-time-foreground: oklch(0.98 0.005 250);
@@ -115,24 +105,8 @@
   --type-count-foreground: oklch(0.98 0.005 80);
   --type-quota: oklch(0.55 0.14 45);
   --type-quota-foreground: oklch(0.98 0.005 45);
-
-  /* Layered, soft elevation — gives surfaces a floating, premium depth. */
-  --elevation-sm: 0 1px 2px -1px oklch(0.22 0.02 270 / 0.05);
-  --elevation-md:
-    0 2px 4px -1px oklch(0.22 0.02 270 / 0.04), 0 6px 14px -3px oklch(0.22 0.02 270 / 0.06),
-    0 14px 28px -8px oklch(0.22 0.02 270 / 0.04);
-  --elevation-lg:
-    0 4px 8px -2px oklch(0.22 0.02 270 / 0.05), 0 12px 28px -6px oklch(0.22 0.02 270 / 0.08),
-    0 28px 56px -14px oklch(0.22 0.02 270 / 0.06);
-  --elevation-card:
-    inset 0 1px 0 0 oklch(1 0 0 / 0.06), 0 1px 2px -1px oklch(0.22 0.02 270 / 0.04),
-    0 3px 8px -3px oklch(0.22 0.02 270 / 0.05), 0 10px 24px -8px oklch(0.22 0.02 270 / 0.03);
-  --elevation-glow:
-    inset 0 1px 0 0 oklch(1 0 0 / 0.18),
-    0 6px 22px -6px color-mix(in oklab, var(--primary) 42%, transparent);
 }
 
-/* ── DARK: cool near-black, solid elevated surfaces, brighter violet primary ── */
 .dark {
   --background: oklch(0.14 0.015 270);
   --foreground: oklch(0.94 0.005 270);
@@ -153,9 +127,9 @@
   --border: oklch(0.32 0.015 270 / 45%);
   --input: oklch(0.28 0.02 270 / 85%);
   --ring: oklch(0.7 0.12 270 / 45%);
-  --chart-1: oklch(0.72 0.1 250);
-  --chart-2: oklch(0.72 0.1 150);
-  --chart-3: oklch(0.72 0.1 45);
+  --chart-1: oklch(0.72 0.10 250);
+  --chart-2: oklch(0.72 0.10 150);
+  --chart-3: oklch(0.72 0.10 45);
   --chart-4: oklch(0.75 0.06 270);
   --chart-5: oklch(0.7 0.06 270);
   --sidebar: oklch(0.18 0.02 270 / 95%);
@@ -168,82 +142,50 @@
   --sidebar-ring: oklch(0.7 0.12 270 / 45%);
   --surface: oklch(0.24 0.02 270);
   --surface-foreground: oklch(0.94 0.005 270);
-  --success: oklch(0.65 0.1 150);
+  --success: oklch(0.65 0.10 150);
   --success-foreground: oklch(0.14 0.015 270);
   --type-time: oklch(0.72 0.12 250);
-  --type-time-foreground: oklch(0.14 0.015 270);
   --type-count: oklch(0.72 0.12 150);
-  --type-count-foreground: oklch(0.14 0.015 270);
   --type-quota: oklch(0.72 0.12 45);
+  --type-time-foreground: oklch(0.14 0.015 270);
+  --type-count-foreground: oklch(0.14 0.015 270);
   --type-quota-foreground: oklch(0.14 0.015 270);
-
-  --elevation-sm: 0 1px 2px oklch(0 0 0 / 0.4);
-  --elevation-md: 0 2px 6px -1px oklch(0 0 0 / 0.4), 0 8px 22px -4px oklch(0 0 0 / 0.45);
-  --elevation-lg:
-    0 6px 14px -4px oklch(0 0 0 / 0.5), 0 16px 38px -8px oklch(0 0 0 / 0.55),
-    0 32px 64px -16px oklch(0 0 0 / 0.5);
-  --elevation-card:
-    inset 0 1px 0 0 oklch(1 0 0 / 0.05), 0 1px 2px oklch(0 0 0 / 0.3),
-    0 6px 16px -4px oklch(0 0 0 / 0.4), 0 20px 40px -12px oklch(0 0 0 / 0.4);
-  --elevation-glow:
-    inset 0 1px 0 0 oklch(1 0 0 / 0.12),
-    0 8px 30px -6px color-mix(in oklab, var(--primary) 50%, transparent);
 }
 
 @layer base {
   html {
     background-color: var(--background);
-    color-scheme: light;
-    &.dark {
-      color-scheme: dark;
-    }
   }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
-    @apply bg-background text-foreground antialiased;
-    font-variant-numeric: tabular-nums;
+    @apply bg-background text-foreground;
   }
+
   ::selection {
-    background-color: color-mix(in oklab, var(--primary) 22%, transparent);
+    background-color: color-mix(in oklab, var(--primary) 20%, transparent);
   }
 }
 
 @layer components {
-  /* The one glass surface — a quiet blurred sticky header. */
   .glass-header {
     @apply sticky top-0 z-50 border-b;
-    background: color-mix(in oklab, var(--background) 78%, transparent);
+    background: color-mix(in oklab, var(--background) 75%, transparent);
     backdrop-filter: blur(16px) saturate(1.2);
+    box-shadow: 0 1px 3px -1px rgba(0, 0, 0, 0.04);
   }
 
-  /* A single soft top spotlight — restrained Raycast-style depth (not a mesh). */
-  .bg-spotlight {
-    position: relative;
-    isolation: isolate;
-  }
-  .bg-spotlight::before {
-    content: '';
-    position: absolute;
-    z-index: -1;
-    pointer-events: none;
-    left: 0;
-    right: 0;
-    top: -3rem;
-    height: 34rem;
-    background: radial-gradient(
-      50% 50% at 50% 0%,
-      color-mix(in oklab, var(--primary) 38%, transparent),
-      transparent 72%
-    );
-    filter: blur(28px);
-  }
-  :where(.dark) .bg-spotlight::before {
-    background: radial-gradient(
-      50% 50% at 50% 0%,
-      color-mix(in oklab, var(--primary) 30%, transparent),
-      transparent 72%
-    );
+  .hero-panel {
+    @apply relative isolate overflow-hidden rounded-xl border bg-card;
+    box-shadow:
+      0 1px 3px 0 oklch(0.2 0.01 260 / 0.05),
+      0 1px 2px -1px oklch(0.2 0.01 260 / 0.03);
   }
 }
