@@ -17,6 +17,10 @@ Line charts SHALL render a translucent gradient area fill beneath the series lin
 - **WHEN** a line chart (e.g. daily-cost or cost-per-use trend) renders
 - **THEN** a gradient fill extends from the line down to the axis, fading to transparent
 
+#### Scenario: Empty chart does not render area fill
+- **WHEN** a chart has no data points
+- **THEN** the chart renders an empty state instead of an empty gradient area
+
 ### Requirement: Token-derived chart palette
 Chart series colors (strokes, fills, bars) MUST derive from the design-token palette (the asset-type identity hues and brand). Charts MUST NOT use hardcoded color literals such as `hsl(221, 83%, 53%)`.
 
@@ -45,4 +49,29 @@ Chart tooltips MUST match the active theme as a solid surface (opaque `bg-popove
 #### Scenario: Tooltip matches light theme
 - **WHEN** a user hovers a chart in light mode
 - **THEN** the tooltip renders as a solid light surface with readable theme-token text
+
+### Requirement: Charts SHALL show an empty state when there is no data or only a single data point
+When chart data is empty or contains only one data point, `AssetChart` SHALL render an empty-state placeholder instead of a meaningless trend chart.
+
+#### Scenario: No usage records
+- **WHEN** an asset has no usage records
+- **THEN** the chart area shows a "No data" empty state and does not render axes
+
+#### Scenario: Single record only
+- **WHEN** an asset has only one usage record
+- **THEN** the chart area shows an explanatory message that more data is needed to show a trend
+
+### Requirement: Chart containers SHALL maintain a minimum height
+Chart containers SHALL maintain a minimum height of 288px (`h-72`) in responsive layouts to prevent collapse.
+
+#### Scenario: Viewing chart on mobile
+- **WHEN** the user views the chart on a narrow viewport
+- **THEN** the chart container height is at least 288px and its width adapts
+
+### Requirement: Chart tooltips SHALL use theme tokens
+`ChartTooltip` SHALL use theme tokens such as `bg-popover`, `text-popover-foreground`, and `border-border` to ensure good contrast in both light and dark themes.
+
+#### Scenario: Tooltip in dark mode
+- **WHEN** the user hovers over a chart in dark mode
+- **THEN** the tooltip background is dark, text is light, and it matches the active theme
 
