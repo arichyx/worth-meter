@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useToast } from '@/components/ui/toast';
 import type { Asset } from '@/lib/db/schema';
 import { useI18n } from '@/lib/i18n';
 import { updateAssetAction } from './actions';
@@ -27,6 +28,7 @@ interface EditDialogProps {
 export function EditDialog({ asset }: EditDialogProps) {
   const { t } = useI18n();
   const router = useRouter();
+  const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [pending, startTransition] = useTransition();
 
@@ -79,10 +81,15 @@ export function EditDialog({ asset }: EditDialogProps) {
       data.billingCycleEnd = billingCycleEnd ? format(billingCycleEnd, 'yyyy-MM-dd') : '';
     }
 
-    startTransition(() => {
-      updateAssetAction(asset.id, data);
-      setOpen(false);
-      router.refresh();
+    startTransition(async () => {
+      try {
+        await updateAssetAction(asset.id, data);
+        setOpen(false);
+        toast({ title: t('assetUpdated'), variant: 'success' });
+        router.refresh();
+      } catch {
+        toast({ title: t('assetUpdateFailed'), variant: 'destructive' });
+      }
     });
   }
 
@@ -90,9 +97,9 @@ export function EditDialog({ asset }: EditDialogProps) {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
         render={
-          <Button variant="outline" size="sm">
-            <Pencil className="h-4 w-4 mr-1" />
-            {t('edit')}
+          <Button variant="outline" size="sm" aria-label={t('edit')} className="px-2 xl:px-2.5">
+            <Pencil data-icon="inline-start" />
+            <span className="hidden xl:inline">{t('edit')}</span>
           </Button>
         }
       />

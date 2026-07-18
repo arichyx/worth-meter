@@ -12,24 +12,32 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import { useToast } from '@/components/ui/toast';
 import { useI18n } from '@/lib/i18n';
 import { archiveAssetAction, unarchiveAssetAction } from './actions';
 
 export function ArchiveDialog({ assetId, archived }: { assetId: string; archived: boolean }) {
   const { t } = useI18n();
   const router = useRouter();
+  const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [pending, startTransition] = useTransition();
 
   function handleAction() {
-    startTransition(() => {
-      if (archived) {
-        unarchiveAssetAction(assetId);
-      } else {
-        archiveAssetAction(assetId);
+    startTransition(async () => {
+      try {
+        if (archived) {
+          await unarchiveAssetAction(assetId);
+          toast({ title: t('assetUnarchived'), variant: 'success' });
+        } else {
+          await archiveAssetAction(assetId);
+          toast({ title: t('assetArchived'), variant: 'success' });
+        }
+        router.refresh();
+        setOpen(false);
+      } catch {
+        toast({ title: t('assetArchiveFailed'), variant: 'destructive' });
       }
-      router.refresh();
-      setOpen(false);
     });
   }
 
@@ -37,16 +45,21 @@ export function ArchiveDialog({ assetId, archived }: { assetId: string; archived
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
         render={
-          <Button variant="ghost" size="sm">
+          <Button
+            variant="ghost"
+            size="sm"
+            aria-label={archived ? t('unarchive') : t('archive')}
+            className="px-2 xl:px-2.5"
+          >
             {archived ? (
               <>
-                <ArchiveRestore className="h-4 w-4 mr-1" />
-                {t('unarchive')}
+                <ArchiveRestore data-icon="inline-start" />
+                <span className="hidden xl:inline">{t('unarchive')}</span>
               </>
             ) : (
               <>
-                <Archive className="h-4 w-4 mr-1" />
-                {t('archive')}
+                <Archive data-icon="inline-start" />
+                <span className="hidden xl:inline">{t('archive')}</span>
               </>
             )}
           </Button>

@@ -8,8 +8,8 @@ export interface CountBasedMetrics {
   isBreakEven: boolean;
 }
 
-export function calculateCountBased(asset: Asset, records: UsageRecord[]): CountBasedMetrics {
-  const usedCount = records.length;
+export function calculateCountBasedFromUsedCount(asset: Asset, count: number): CountBasedMetrics {
+  const usedCount = Number.isNaN(count) ? 0 : Math.max(0, Math.floor(count));
   const costPerUse = usedCount > 0 ? asset.totalCost / usedCount : asset.totalCost;
 
   let targetUseCount: number | null = null;
@@ -27,4 +27,8 @@ export function calculateCountBased(asset: Asset, records: UsageRecord[]): Count
     breakEvenProgress,
     isBreakEven: breakEvenProgress !== null && breakEvenProgress >= 1,
   };
+}
+
+export function calculateCountBased(asset: Asset, records: UsageRecord[]): CountBasedMetrics {
+  return calculateCountBasedFromUsedCount(asset, records.length);
 }

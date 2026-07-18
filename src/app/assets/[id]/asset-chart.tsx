@@ -1,6 +1,7 @@
 'use client';
 
 import { format } from 'date-fns';
+import { TrendingUp } from 'lucide-react';
 import {
   Area,
   AreaChart,
@@ -11,8 +12,10 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartTooltip, useChartTheme } from '@/components/charts/chart-theme';
+import { EmptyState } from '@/components/empty-state';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { calculateTimeBased } from '@/lib/calculations';
 import type { Asset, UsageRecord } from '@/lib/db/schema';
 import { getCurrencySymbol, useI18n } from '@/lib/i18n';
@@ -75,15 +78,15 @@ export function AssetChart({ asset }: { asset: AssetWithRecords }) {
         ? tt('costPerUse')
         : tt('usageRate');
   const formatValue =
-    asset.type === 'quota'
-      ? (v: number) => `${v}%`
-      : (v: number) => `${sym}${v.toFixed(2)}`;
+    asset.type === 'quota' ? (v: number) => `${v}%` : (v: number) => `${sym}${v.toFixed(2)}`;
 
   const axisProps = {
     tick: { fontSize: 12, fill: theme?.colors.axis ?? 'currentColor' },
     tickLine: false,
     axisLine: false,
   } as const;
+
+  const isEmpty = chartData.length < 2;
 
   return (
     <Card className="mb-8">
@@ -100,8 +103,21 @@ export function AssetChart({ asset }: { asset: AssetWithRecords }) {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-72">
-          {theme && (
+        {isEmpty ? (
+          <EmptyState
+            icon={<TrendingUp className="h-6 w-6" />}
+            title={tt('noChartData')}
+            description={
+              asset.type === 'time'
+                ? tt('noTimeChartDataDescription')
+                : tt('noChartDataDescription')
+            }
+            className="h-72"
+          />
+        ) : !theme ? (
+          <Skeleton className="h-72 w-full" aria-label={tt('loading')} />
+        ) : (
+          <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               {asset.type === 'time' ? (
                 <AreaChart data={chartData as { label: string; dailyCost: number; days: number }[]}>
@@ -171,12 +187,17 @@ export function AssetChart({ asset }: { asset: AssetWithRecords }) {
                   />
                   <XAxis dataKey="label" {...axisProps} />
                   <YAxis width={44} {...axisProps} />
-                  <Bar dataKey="usedPercent" name={seriesName} fill="url(#grad-bar)" radius={[6, 6, 0, 0]} />
+                  <Bar
+                    dataKey="usedPercent"
+                    name={seriesName}
+                    fill="url(#grad-bar)"
+                    radius={[6, 6, 0, 0]}
+                  />
                 </BarChart>
               )}
             </ResponsiveContainer>
-          )}
-        </div>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

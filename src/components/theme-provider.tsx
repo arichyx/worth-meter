@@ -1,6 +1,6 @@
 'use client';
 
-import { type ReactNode, createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { createContext, type ReactNode, useCallback, useContext, useEffect, useState } from 'react';
 import { THEME_COOKIE_NAME, type Theme } from '@/lib/theme';
 
 interface ThemeContextType {

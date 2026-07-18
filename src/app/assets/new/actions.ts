@@ -1,6 +1,5 @@
 'use server';
 
-import { redirect } from 'next/navigation';
 import { createAsset } from '@/lib/db/queries';
 
 export async function createAssetAction(formData: FormData) {
@@ -29,5 +28,5 @@ export async function createAssetAction(formData: FormData) {
   }
 
   const asset = createAsset(data as Parameters<typeof createAsset>[0]);
-  redirect(`/assets/${asset!.id}`);
+  return { id: asset!.id };
 }

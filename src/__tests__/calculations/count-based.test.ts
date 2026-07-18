@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { calculateCountBased } from '@/lib/calculations/count-based';
+import {
+  calculateCountBased,
+  calculateCountBasedFromUsedCount,
+} from '@/lib/calculations/count-based';
 import type { Asset, UsageRecord } from '@/lib/db/schema';
 
 function makeAsset(overrides: Partial<Asset> = {}): Asset {
@@ -71,5 +74,12 @@ describe('calculateCountBased', () => {
     expect(result.targetUseCount).toBeNull();
     expect(result.breakEvenProgress).toBeNull();
     expect(result.isBreakEven).toBe(false);
+  });
+
+  it('uses the same calculation when only a projected use count is available', () => {
+    const asset = makeAsset();
+    expect(calculateCountBasedFromUsedCount(asset, 10)).toEqual(
+      calculateCountBased(asset, makeRecords(10)),
+    );
   });
 });

@@ -2,6 +2,7 @@
 
 import { Monitor, Moon, Sun } from 'lucide-react';
 import type { ReactNode } from 'react';
+import { useTheme } from '@/components/theme-provider';
 import {
   Select,
   SelectContent,
@@ -9,7 +10,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useTheme } from '@/components/theme-provider';
 import { THEME_OPTIONS, type Theme } from '@/lib/theme';
 
 const ICONS: Record<Theme, ReactNode> = {
@@ -24,7 +24,11 @@ export function ThemeToggle() {
 
   return (
     <Select value={theme} onValueChange={(v) => setTheme(v as Theme)}>
-      <SelectTrigger size="sm" className="gap-1.5">
+      <SelectTrigger
+        size="sm"
+        aria-label={`Theme: ${current?.label ?? theme}`}
+        className="size-7 justify-center gap-0 p-0 lg:w-fit lg:justify-between lg:gap-1.5 lg:px-2.5 [&>[data-slot=select-value]]:hidden [&>svg:last-child]:hidden lg:[&>[data-slot=select-value]]:flex lg:[&>svg:last-child]:block"
+      >
         {ICONS[theme]}
         <SelectValue>{current?.label}</SelectValue>
       </SelectTrigger>

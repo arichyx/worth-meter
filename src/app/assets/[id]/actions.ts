@@ -1,6 +1,5 @@
 'use server';
 
-import { redirect } from 'next/navigation';
 import {
   addUsageRecord,
   archiveAsset,
@@ -11,7 +10,6 @@ import {
 
 export async function deleteAssetAction(assetId: string) {
   deleteAsset(assetId);
-  redirect('/');
 }
 
 export async function addUsageRecordAction(assetId: string, value: number, recordedAt?: string) {

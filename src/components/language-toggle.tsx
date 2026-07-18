@@ -25,7 +25,11 @@ export function LanguageToggle() {
         router.refresh();
       }}
     >
-      <SelectTrigger size="sm" className="gap-1.5">
+      <SelectTrigger
+        size="sm"
+        aria-label={`${current?.flag ?? ''} ${current?.label ?? locale}`.trim()}
+        className="size-7 justify-center gap-0 p-0 lg:w-fit lg:justify-between lg:gap-1.5 lg:px-2.5 [&>[data-slot=select-value]]:hidden [&>svg:last-child]:hidden lg:[&>[data-slot=select-value]]:flex lg:[&>svg:last-child]:block"
+      >
         <Languages className="h-4 w-4" />
         <SelectValue>
           {current?.flag} {current?.label}

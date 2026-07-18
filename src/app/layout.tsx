@@ -2,14 +2,14 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import { cookies } from 'next/headers';
 import './globals.css';
-import { CURRENCY_COOKIE_NAME, isValidCurrency, type Currency } from '@/lib/currency';
+import { CURRENCY_COOKIE_NAME, type Currency, isValidCurrency } from '@/lib/currency';
 import { COOKIE_NAME, isValidLocale, type Locale } from '@/lib/i18n/locale';
 import {
   DEFAULT_THEME,
-  THEME_COOKIE_NAME,
-  THEME_INIT_SCRIPT,
   htmlThemeClass,
   isValidTheme,
+  THEME_COOKIE_NAME,
+  THEME_INIT_SCRIPT,
   type Theme,
 } from '@/lib/theme';
 import { Providers } from './providers';
@@ -54,6 +54,7 @@ export default async function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-background">
         {/* Pre-paint theme resolver — no flash of wrong theme. Runs synchronously. */}
+        {/* biome-ignore lint/security/noDangerouslySetInnerHtml: Sync inline theme resolver to avoid FOUC before hydration. */}
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         <Providers locale={locale} currency={currency} initialTheme={theme}>
           {children}

@@ -78,7 +78,7 @@ export function ChartTooltip({ active, payload, label, formatValue }: ChartToolt
               ? formatValue
                 ? formatValue(p.value)
                 : p.value.toString()
-                : (p.value ?? '');
+              : (p.value ?? '');
           return (
             <div key={i} className="flex items-center gap-2 tabular-nums">
               <span className="size-2 rounded-full" style={{ backgroundColor: p.color }} />

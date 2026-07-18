@@ -12,18 +12,26 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import { useToast } from '@/components/ui/toast';
 import { useI18n } from '@/lib/i18n';
 import { deleteAssetAction } from './actions';
 
 export function DeleteDialog({ assetId }: { assetId: string }) {
   const { t } = useI18n();
-  const _router = useRouter();
+  const router = useRouter();
+  const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [pending, startTransition] = useTransition();
 
   function handleDelete() {
-    startTransition(() => {
-      deleteAssetAction(assetId);
+    startTransition(async () => {
+      try {
+        await deleteAssetAction(assetId);
+        toast({ title: t('assetDeleted'), variant: 'success' });
+        router.push('/');
+      } catch {
+        toast({ title: t('assetDeleteFailed'), variant: 'destructive' });
+      }
     });
   }
 
@@ -31,9 +39,14 @@ export function DeleteDialog({ assetId }: { assetId: string }) {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
         render={
-          <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive">
-            <Trash2 className="h-4 w-4 mr-1" />
-            {t('delete')}
+          <Button
+            variant="ghost"
+            size="sm"
+            aria-label={t('delete')}
+            className="px-2 text-destructive hover:text-destructive xl:px-2.5"
+          >
+            <Trash2 data-icon="inline-start" />
+            <span className="hidden xl:inline">{t('delete')}</span>
           </Button>
         }
       />

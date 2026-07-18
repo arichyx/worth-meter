@@ -9,8 +9,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { type Currency, useI18n } from '@/lib/i18n';
 import { CURRENCIES } from '@/lib/currency';
+import { type Currency, useI18n } from '@/lib/i18n';
 
 export function CurrencyToggle() {
   const { currency, setCurrency } = useI18n();
@@ -25,9 +25,15 @@ export function CurrencyToggle() {
         router.refresh();
       }}
     >
-      <SelectTrigger size="sm" className="gap-1.5">
+      <SelectTrigger
+        size="sm"
+        aria-label={`${current?.symbol ?? ''} ${current?.label ?? currency}`.trim()}
+        className="size-7 justify-center gap-0 p-0 lg:w-fit lg:justify-between lg:gap-1.5 lg:px-2.5 [&>[data-slot=select-value]]:hidden [&>svg:last-child]:hidden lg:[&>[data-slot=select-value]]:flex lg:[&>svg:last-child]:block"
+      >
         <Coins className="h-4 w-4" />
-        <SelectValue>{current?.symbol} {current?.label}</SelectValue>
+        <SelectValue>
+          {current?.symbol} {current?.label}
+        </SelectValue>
       </SelectTrigger>
       <SelectContent>
         {CURRENCIES.map((c) => (

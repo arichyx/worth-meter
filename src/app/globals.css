@@ -59,6 +59,16 @@
   --radius-2xl: calc(var(--radius) * 1.5);
   --radius-3xl: calc(var(--radius) * 2);
   --radius-4xl: calc(var(--radius) * 2.5);
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-xl: var(--shadow-xl);
+  --shadow-glow: var(--shadow-glow);
+  --duration-fast: var(--duration-fast);
+  --duration-normal: var(--duration-normal);
+  --duration-slow: var(--duration-slow);
+  --ease-default: var(--ease-default);
+  --ease-emphasized: var(--ease-emphasized);
 }
 
 :root {
@@ -87,6 +97,18 @@
   --chart-4: oklch(0.55 0.08 270);
   --chart-5: oklch(0.5 0.06 270);
   --radius: 0.75rem;
+  --shadow-sm: 0 1px 2px 0 oklch(0.2 0.01 260 / 0.05), 0 1px 2px -1px oklch(0.2 0.01 260 / 0.03);
+  --shadow-md: 0 4px 6px -1px oklch(0.2 0.01 260 / 0.06), 0 2px 4px -2px oklch(0.2 0.01 260 / 0.04);
+  --shadow-lg:
+    0 10px 15px -3px oklch(0.2 0.01 260 / 0.08), 0 4px 6px -4px oklch(0.2 0.01 260 / 0.05);
+  --shadow-xl:
+    0 20px 25px -5px oklch(0.2 0.01 260 / 0.1), 0 8px 10px -6px oklch(0.2 0.01 260 / 0.06);
+  --shadow-glow: 0 0 24px -4px oklch(0.6 0.14 270 / 0.35);
+  --duration-fast: 100ms;
+  --duration-normal: 200ms;
+  --duration-slow: 300ms;
+  --ease-default: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-emphasized: cubic-bezier(0.2, 0, 0, 1);
   --sidebar: oklch(0.98 0.005 270 / 95%);
   --sidebar-foreground: oklch(0.18 0.01 270);
   --sidebar-primary: oklch(0.45 0.14 270);
@@ -97,7 +119,7 @@
   --sidebar-ring: oklch(0.55 0.12 270 / 35%);
   --surface: oklch(0.96 0.006 270);
   --surface-foreground: oklch(0.3 0.015 270);
-  --success: oklch(0.55 0.10 150);
+  --success: oklch(0.55 0.1 150);
   --success-foreground: oklch(0.98 0.005 80);
   --type-time: oklch(0.55 0.14 250);
   --type-time-foreground: oklch(0.98 0.005 250);
@@ -127,9 +149,9 @@
   --border: oklch(0.32 0.015 270 / 45%);
   --input: oklch(0.28 0.02 270 / 85%);
   --ring: oklch(0.7 0.12 270 / 45%);
-  --chart-1: oklch(0.72 0.10 250);
-  --chart-2: oklch(0.72 0.10 150);
-  --chart-3: oklch(0.72 0.10 45);
+  --chart-1: oklch(0.72 0.1 250);
+  --chart-2: oklch(0.72 0.1 150);
+  --chart-3: oklch(0.72 0.1 45);
   --chart-4: oklch(0.75 0.06 270);
   --chart-5: oklch(0.7 0.06 270);
   --sidebar: oklch(0.18 0.02 270 / 95%);
@@ -142,7 +164,7 @@
   --sidebar-ring: oklch(0.7 0.12 270 / 45%);
   --surface: oklch(0.24 0.02 270);
   --surface-foreground: oklch(0.94 0.005 270);
-  --success: oklch(0.65 0.10 150);
+  --success: oklch(0.65 0.1 150);
   --success-foreground: oklch(0.14 0.015 270);
   --type-time: oklch(0.72 0.12 250);
   --type-count: oklch(0.72 0.12 150);
@@ -150,6 +172,11 @@
   --type-time-foreground: oklch(0.14 0.015 270);
   --type-count-foreground: oklch(0.14 0.015 270);
   --type-quota-foreground: oklch(0.14 0.015 270);
+  --shadow-sm: 0 1px 2px 0 oklch(0 0 0 / 0.25), 0 1px 2px -1px oklch(0 0 0 / 0.18);
+  --shadow-md: 0 4px 6px -1px oklch(0 0 0 / 0.32), 0 2px 4px -2px oklch(0 0 0 / 0.22);
+  --shadow-lg: 0 10px 15px -3px oklch(0 0 0 / 0.4), 0 4px 6px -4px oklch(0 0 0 / 0.28);
+  --shadow-xl: 0 20px 25px -5px oklch(0 0 0 / 0.5), 0 8px 10px -6px oklch(0 0 0 / 0.32);
+  --shadow-glow: 0 0 32px -4px oklch(0.55 0.14 270 / 0.55);
 }
 
 @layer base {
@@ -159,6 +186,21 @@
 
   html.dark {
     color-scheme: dark;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      /* biome-ignore lint/complexity/noImportantStyles: Required to override authored animations/transitions for accessibility. */
+      animation-duration: 0.01ms !important;
+      /* biome-ignore lint/complexity/noImportantStyles: Required to override authored animations/transitions for accessibility. */
+      animation-iteration-count: 1 !important;
+      /* biome-ignore lint/complexity/noImportantStyles: Required to override authored animations/transitions for accessibility. */
+      transition-duration: 0.01ms !important;
+      /* biome-ignore lint/complexity/noImportantStyles: Required to override scroll behavior for accessibility. */
+      scroll-behavior: auto !important;
+    }
   }
 
   * {

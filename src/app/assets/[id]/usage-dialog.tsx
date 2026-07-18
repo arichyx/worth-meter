@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useToast } from '@/components/ui/toast';
 import type { AssetType } from '@/lib/db/schema';
 import { useI18n } from '@/lib/i18n';
 import { addUsageRecordAction } from './actions';
@@ -23,6 +24,7 @@ import { addUsageRecordAction } from './actions';
 export function UsageDialog({ assetId, assetType }: { assetId: string; assetType: AssetType }) {
   const { t } = useI18n();
   const router = useRouter();
+  const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [usageValue, setUsageValue] = useState('');
   const [useDate, setUseDate] = useState<Date | undefined>(new Date());
@@ -42,12 +44,20 @@ export function UsageDialog({ assetId, assetType }: { assetId: string; assetType
 
     const recordedAt = assetType === 'count' && useDate ? format(useDate, 'yyyy-MM-dd') : undefined;
 
-    startTransition(() => {
-      addUsageRecordAction(assetId, value, recordedAt);
-      setUsageValue('');
-      setUseDate(new Date());
-      setOpen(false);
-      router.refresh();
+    startTransition(async () => {
+      try {
+        await addUsageRecordAction(assetId, value, recordedAt);
+        setUsageValue('');
+        setUseDate(new Date());
+        setOpen(false);
+        toast({
+          title: assetType === 'count' ? t('useLogged') : t('resetLogged'),
+          variant: 'success',
+        });
+        router.refresh();
+      } catch {
+        toast({ title: t('useLogFailed'), variant: 'destructive' });
+      }
     });
   }
 

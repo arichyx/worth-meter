@@ -1,16 +1,16 @@
 'use client';
 
 import { createContext, type ReactNode, useCallback, useContext, useState } from 'react';
-import { CURRENCY_COOKIE_NAME, type Currency, getCurrencySymbol } from '@/lib/currency';
+import { CURRENCY_COOKIE_NAME, type Currency } from '@/lib/currency';
 import { COOKIE_NAME, type Locale } from './locale';
 import { en, type TranslationKey } from './locales/en';
 import { ja } from './locales/ja';
 import { zh } from './locales/zh';
 import { zhTW } from './locales/zh-TW';
 
-export type { Locale } from './locale';
 export type { Currency } from '@/lib/currency';
 export { getCurrencySymbol } from '@/lib/currency';
+export type { Locale } from './locale';
 
 const translations: Record<Locale, Record<TranslationKey, string>> = {
   en,
