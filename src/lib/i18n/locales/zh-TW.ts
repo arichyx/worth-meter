@@ -147,6 +147,10 @@ export const zhTW: Record<TranslationKey, string> = {
 
   deleteConfirmTitle: '刪除資產',
   deleteConfirmDescription: '此操作不可撤銷，所有使用記錄將被永久刪除。',
+  deleteUsageRecordTitle: '刪除使用記錄',
+  deleteUsageRecordDescription: '確定刪除這筆使用記錄嗎？此操作不可撤銷。',
+  usageRecordDeleted: '使用記錄已刪除',
+  usageRecordDeleteFailed: '刪除使用記錄失敗',
   submitting: '提交中...',
 
   edit: '編輯',

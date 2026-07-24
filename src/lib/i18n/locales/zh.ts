@@ -135,6 +135,10 @@ export const zh: Record<TranslationKey, string> = {
   useDate: '使用日期',
   deleteConfirmTitle: '删除资产',
   deleteConfirmDescription: '此操作不可撤销，所有使用记录将被永久删除。',
+  deleteUsageRecordTitle: '删除使用记录',
+  deleteUsageRecordDescription: '确定删除这条使用记录吗？此操作不可撤销。',
+  usageRecordDeleted: '使用记录已删除',
+  usageRecordDeleteFailed: '删除使用记录失败',
   submitting: '提交中...',
 
   // Charts

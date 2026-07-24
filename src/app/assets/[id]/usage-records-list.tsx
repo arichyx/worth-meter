@@ -8,6 +8,7 @@ import type { AssetType, UsageRecord } from '@/lib/db/schema';
 import type { Locale } from '@/lib/i18n/locale';
 import { t } from '@/lib/i18n/server';
 import { cn } from '@/lib/utils';
+import { DeleteUsageRecordDialog } from './delete-usage-record-dialog';
 
 interface UsageRecordsListProps {
   assetId: string;
@@ -75,9 +76,12 @@ export function UsageRecordsList({
                 {assetType === 'count' ? tt('oneUse') : `${tt('remaining')} ${record.value}%`}
               </span>
             </div>
-            <span className="shrink-0 text-sm text-muted-foreground">
-              {format(new Date(record.recordedAt), 'yyyy-MM-dd')}
-            </span>
+            <div className="flex shrink-0 items-center gap-1">
+              <span className="text-sm text-muted-foreground">
+                {format(new Date(record.recordedAt), 'yyyy-MM-dd')}
+              </span>
+              <DeleteUsageRecordDialog recordId={record.id} />
+            </div>
           </div>
         ))}
 

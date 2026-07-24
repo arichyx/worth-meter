@@ -90,3 +90,8 @@ export function addUsageRecord(assetId: string, value: number, recordedAt?: stri
     .run();
   return db.select().from(schema.usageRecords).where(eq(schema.usageRecords.id, id)).get();
 }
+
+export function deleteUsageRecord(id: string) {
+  const db = getDb();
+  db.delete(schema.usageRecords).where(eq(schema.usageRecords.id, id)).run();
+}

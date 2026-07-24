@@ -134,6 +134,10 @@ export const en = {
   deleteConfirmTitle: 'Delete Asset',
   deleteConfirmDescription:
     'This action cannot be undone. All usage records will be permanently deleted.',
+  deleteUsageRecordTitle: 'Delete Usage Record',
+  deleteUsageRecordDescription: 'This action cannot be undone. Delete this usage record?',
+  usageRecordDeleted: 'Usage record deleted',
+  usageRecordDeleteFailed: 'Failed to delete usage record',
   submitting: 'Submitting...',
 
   // Charts

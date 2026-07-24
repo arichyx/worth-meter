@@ -147,6 +147,10 @@ export const ja: Record<TranslationKey, string> = {
 
   deleteConfirmTitle: '資産を削除',
   deleteConfirmDescription: 'この操作は取り消せません。すべての使用記録が完全に削除されます。',
+  deleteUsageRecordTitle: '使用記録を削除',
+  deleteUsageRecordDescription: 'この使用記録を削除しますか？この操作は取り消せません。',
+  usageRecordDeleted: '使用記録を削除しました',
+  usageRecordDeleteFailed: '使用記録の削除に失敗しました',
   submitting: '送信中...',
 
   edit: '編集',
