@@ -26,6 +26,7 @@ import type { AssetType } from '@/lib/db/schema';
 import { COOKIE_NAME, isValidLocale, type Locale } from '@/lib/i18n/locale';
 import { t } from '@/lib/i18n/server';
 import { paginateRecords, parsePageParam, USAGE_RECORDS_PAGE_SIZE } from '@/lib/pagination';
+import { canAddUsageRecord } from '@/lib/usage-record-policy';
 import { cn } from '@/lib/utils';
 import { AssetChart } from './asset-chart';
 import { AssetDetailTabs } from './asset-detail-tabs';
@@ -206,7 +207,7 @@ export default async function AssetDetailPage({
                   </span>
                 </div>
               )}
-              {asset.type !== 'time' && (
+              {asset.type !== 'time' && canAddUsageRecord(asset) && (
                 <div className="mt-5">
                   <UsageDialog assetId={id} assetType={asset.type} />
                 </div>

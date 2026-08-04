@@ -1,6 +1,7 @@
 import { eq, inArray } from 'drizzle-orm';
 import { nanoid } from 'nanoid';
 import { cache } from 'react';
+import { assertCanAddUsageRecord } from '@/lib/usage-record-policy';
 import { getDb, schema, seedIfNeeded } from './index';
 import type { NewAsset } from './schema';
 
@@ -83,6 +84,13 @@ export function unarchiveAsset(id: string) {
 
 export function addUsageRecord(assetId: string, value: number, recordedAt?: string) {
   const db = getDb();
+  const asset = db
+    .select({ type: schema.assets.type, archivedAt: schema.assets.archivedAt })
+    .from(schema.assets)
+    .where(eq(schema.assets.id, assetId))
+    .get();
+  assertCanAddUsageRecord(asset);
+
   const id = nanoid();
   const now = new Date().toISOString();
   db.insert(schema.usageRecords)
