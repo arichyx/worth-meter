@@ -10,8 +10,8 @@ export interface TimeBasedMetrics {
   effectiveCost: number;
 }
 
-export function calculateTimeBased(asset: Asset): TimeBasedMetrics {
-  const endDate = asset.archivedAt ? new Date(asset.archivedAt) : new Date();
+export function calculateTimeBased(asset: Asset, asOf: Date = new Date()): TimeBasedMetrics {
+  const endDate = asset.archivedAt ? new Date(asset.archivedAt) : asOf;
   const daysSincePurchase = Math.max(differenceInDays(endDate, new Date(asset.purchaseDate)), 1);
 
   const effectiveCost = asset.totalCost - (asset.resaleValue ?? 0);

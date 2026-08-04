@@ -111,6 +111,7 @@ export function simulatePurchase(
   track: TrackRecord,
   nowIso: string,
 ): SimulationResult {
+  const asOf = new Date(nowIso);
   const synth = buildSyntheticAsset(input, nowIso);
   const effCost = effectiveCost(input);
   const hasHistory = track.hasHistory && track.velocity != null && track.velocity > 0;
@@ -169,7 +170,7 @@ export function simulatePurchase(
 
   const projectedBreakEvenDate =
     projectedBreakEvenDays != null
-      ? addDays(new Date(nowIso), Math.ceil(projectedBreakEvenDays)).toISOString()
+      ? addDays(asOf, Math.ceil(projectedBreakEvenDays)).toISOString()
       : null;
 
   // Horizon cost-per-unit projections. Count/time reuse the calculators over synthetic data
@@ -186,18 +187,12 @@ export function simulatePurchase(
       ).costPerUse;
     } else if (input.type === 'time') {
       costPerUnitAt6m = calculateTimeBased(
-        buildSyntheticAsset(
-          input,
-          nowIso,
-          addDays(new Date(nowIso), -HORIZON_6M_DAYS).toISOString(),
-        ),
+        buildSyntheticAsset(input, nowIso, addDays(asOf, -HORIZON_6M_DAYS).toISOString()),
+        asOf,
       ).dailyCost;
       costPerUnitAt12m = calculateTimeBased(
-        buildSyntheticAsset(
-          input,
-          nowIso,
-          addDays(new Date(nowIso), -HORIZON_12M_DAYS).toISOString(),
-        ),
+        buildSyntheticAsset(input, nowIso, addDays(asOf, -HORIZON_12M_DAYS).toISOString()),
+        asOf,
       ).dailyCost;
     } else if (input.type === 'quota') {
       // Quota horizon: usage ratio scales with cycles elapsed; value recovered caps at totalCost.

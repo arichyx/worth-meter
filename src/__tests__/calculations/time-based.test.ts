@@ -23,6 +23,15 @@ function makeAsset(overrides: Partial<Asset> = {}): Asset {
 }
 
 describe('calculateTimeBased', () => {
+  it('uses an injected as-of date for active assets', () => {
+    const result = calculateTimeBased(
+      makeAsset({ purchaseDate: '2026-01-16' }),
+      new Date('2026-07-18T00:00:00.000Z'),
+    );
+
+    expect(result.daysSincePurchase).toBe(183);
+  });
+
   it('calculates days since purchase', () => {
     const result = calculateTimeBased(makeAsset());
     expect(result.daysSincePurchase).toBeGreaterThan(0);

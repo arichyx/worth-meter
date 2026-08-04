@@ -1,5 +1,5 @@
 import { differenceInDays } from 'date-fns';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { calculateCountBased } from '@/lib/calculations/count-based';
 import {
   deriveHistoricalVelocity,
@@ -82,18 +82,25 @@ describe('simulatePurchase - engine reuse', () => {
   });
 
   it('time daily cost at horizon matches effective cost / elapsed days', () => {
-    const inp = input({
-      type: 'time',
-      totalCost: 8000,
-      resaleValue: 3000,
-      targetDailyCost: 20,
-      expectedUsesPerWeek: null,
-    });
-    const res = simulatePurchase(inp, noHistoryTrack('time'), NOW);
-    // effective cost 5000; at 183 days dailyCost = 5000/183
-    expect(res.costPerUnitAt6m).toBeCloseTo(5000 / 183, 2);
-    expect(res.costPerUnitAt12m).toBeCloseTo(5000 / 365, 2);
-    expect(res.effectiveCost).toBe(5000);
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2030-01-01T00:00:00.000Z'));
+
+    try {
+      const inp = input({
+        type: 'time',
+        totalCost: 8000,
+        resaleValue: 3000,
+        targetDailyCost: 20,
+        expectedUsesPerWeek: null,
+      });
+      const res = simulatePurchase(inp, noHistoryTrack('time'), NOW);
+      // The injected NOW, rather than the wall clock, defines both horizons.
+      expect(res.costPerUnitAt6m).toBeCloseTo(5000 / 183, 2);
+      expect(res.costPerUnitAt12m).toBeCloseTo(5000 / 365, 2);
+      expect(res.effectiveCost).toBe(5000);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('handles very large expected usage without materializing synthetic records', () => {
